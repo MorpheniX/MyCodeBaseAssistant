@@ -6,12 +6,7 @@ import ee.carlrobert.codegpt.completions.ChatCompletionParameters;
 import ee.carlrobert.codegpt.conversations.message.Message;
 import ee.carlrobert.codegpt.settings.GeneralSettings;
 import ee.carlrobert.codegpt.settings.service.ServiceType;
-import ee.carlrobert.codegpt.settings.service.anthropic.AnthropicSettings;
-import ee.carlrobert.codegpt.settings.service.azure.AzureSettings;
 import ee.carlrobert.codegpt.settings.service.codegpt.CodeGPTServiceSettings;
-import ee.carlrobert.codegpt.settings.service.google.GoogleSettings;
-import ee.carlrobert.codegpt.settings.service.llama.LlamaSettings;
-import ee.carlrobert.codegpt.settings.service.ollama.OllamaSettings;
 import ee.carlrobert.codegpt.settings.service.openai.OpenAISettings;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -196,20 +191,6 @@ public final class ConversationService {
           .getModel();
       case OPENAI -> OpenAISettings.getCurrentState().getModel();
       case CUSTOM_OPENAI -> "CustomService";
-      case ANTHROPIC -> AnthropicSettings.getCurrentState().getModel();
-      case AZURE -> AzureSettings.getCurrentState().getDeploymentId();
-      case LLAMA_CPP -> {
-        var llamaSettings = LlamaSettings.getCurrentState();
-        yield llamaSettings.isUseCustomModel()
-            ? llamaSettings.getCustomLlamaModelPath()
-            : llamaSettings.getHuggingFaceModel().getCode();
-      }
-      case OLLAMA -> application.getService(OllamaSettings.class)
-          .getState()
-          .getModel();
-      case GOOGLE -> application.getService(GoogleSettings.class)
-          .getState()
-          .getModel();
     };
   }
 }

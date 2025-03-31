@@ -30,8 +30,8 @@ class DocumentationSettingsState : BaseState() {
 }
 
 class DocumentationDetailsState : BaseState() {
-    var name by string("ProxyAI Docs")
-    var url by string("https://docs.tryproxy.io")
+    var name by string("")
+    var url by string("")
     var lastUsedDateTime by string()
 }
 

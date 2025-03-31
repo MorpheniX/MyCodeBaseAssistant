@@ -3,19 +3,12 @@ package ee.carlrobert.codegpt.codecompletions
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.intellij.openapi.components.service
-import ee.carlrobert.codegpt.completions.llama.LlamaModel
 import ee.carlrobert.codegpt.credentials.CredentialsStore.CredentialKey
 import ee.carlrobert.codegpt.credentials.CredentialsStore.getCredential
 import ee.carlrobert.codegpt.settings.Placeholder.*
 import ee.carlrobert.codegpt.settings.service.codegpt.CodeGPTServiceSettings
 import ee.carlrobert.codegpt.settings.service.custom.CustomServicesSettings
-import ee.carlrobert.codegpt.settings.service.llama.LlamaSettings
-import ee.carlrobert.codegpt.settings.service.llama.LlamaSettingsState
-import ee.carlrobert.codegpt.settings.service.ollama.OllamaSettings
 import ee.carlrobert.llm.client.codegpt.request.CodeCompletionRequest
-import ee.carlrobert.llm.client.llama.completion.LlamaCompletionRequest
-import ee.carlrobert.llm.client.ollama.completion.request.OllamaCompletionRequest
-import ee.carlrobert.llm.client.ollama.completion.request.OllamaParameters
 import ee.carlrobert.llm.client.openai.completion.request.OpenAITextCompletionRequest
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
@@ -97,63 +90,6 @@ object CodeCompletionRequestFactory {
         } catch (e: JsonProcessingException) {
             throw RuntimeException(e)
         }
-    }
-
-    @JvmStatic
-    fun buildLlamaRequest(details: InfillRequest): LlamaCompletionRequest {
-        val settings = LlamaSettings.getCurrentState()
-        val promptTemplate = getLlamaInfillPromptTemplate(settings)
-        val prompt = promptTemplate.buildPrompt(details)
-        val stopTokens = buildList {
-            if (promptTemplate.stopTokens != null) addAll(promptTemplate.stopTokens)
-            if (details.stopTokens.isNotEmpty()) addAll(details.stopTokens)
-        }.ifEmpty { null }
-
-        return LlamaCompletionRequest.Builder(prompt)
-            .setN_predict(MAX_TOKENS)
-            .setStream(true)
-            .setTemperature(0.0)
-            .setStop(stopTokens)
-            .build()
-    }
-
-    fun buildOllamaRequest(details: InfillRequest): OllamaCompletionRequest {
-        val settings = service<OllamaSettings>().state
-        val stopTokens = buildList {
-            if (details.stopTokens.isNotEmpty()) addAll(details.stopTokens)
-        }.toMutableList()
-        val prompt = if (settings.fimOverride) {
-            settings.fimTemplate.stopTokens?.let { stopTokens.addAll(it) }
-            settings.fimTemplate.buildPrompt(details)
-        } else {
-            details.prefix
-        }
-
-        return OllamaCompletionRequest.Builder(
-            settings.model,
-            prompt
-        )
-            .setSuffix(if (settings.fimOverride) null else details.suffix)
-            .setStream(true)
-            .setOptions(
-                OllamaParameters.Builder()
-                    .stop(stopTokens.ifEmpty { null })
-                    .numPredict(MAX_TOKENS)
-                    .temperature(0.4)
-                    .build()
-            )
-            .setRaw(true)
-            .build()
-    }
-
-    private fun getLlamaInfillPromptTemplate(settings: LlamaSettingsState): InfillPromptTemplate {
-        if (!settings.isRunLocalServer) {
-            return settings.remoteModelInfillPromptTemplate
-        }
-        if (settings.isUseCustomModel) {
-            return settings.localModelInfillPromptTemplate
-        }
-        return LlamaModel.findByHuggingFaceModel(settings.huggingFaceModel).infillPromptTemplate
     }
 
     private fun transformValue(

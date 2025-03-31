@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.openapi.project.Project;
 import ee.carlrobert.codegpt.codecompletions.CompletionProgressNotifier;
 import ee.carlrobert.codegpt.events.CodeGPTEvent;
-import ee.carlrobert.codegpt.telemetry.TelemetryAction;
 import ee.carlrobert.llm.client.openai.completion.ErrorDetails;
 import ee.carlrobert.llm.completion.CompletionEventListener;
 import okhttp3.sse.EventSource;
@@ -60,31 +59,12 @@ public class ChatCompletionEventListener implements CompletionEventListener<Stri
 
   @Override
   public void onError(ErrorDetails error, Throwable ex) {
-    try {
       callParameters.getConversation().addMessage(callParameters.getMessage());
       eventListener.handleError(error, ex);
-    } finally {
-      sendError(error, ex);
-    }
   }
 
   private void handleCompleted(StringBuilder messageBuilder) {
     CompletionProgressNotifier.Companion.update(project, false);
     eventListener.handleCompleted(messageBuilder.toString(), callParameters);
-  }
-
-  private void sendError(ErrorDetails error, Throwable ex) {
-    var telemetryMessage = TelemetryAction.COMPLETION_ERROR.createActionMessage();
-    if ("insufficient_quota".equals(error.getCode())) {
-      telemetryMessage
-          .property("type", "USER")
-          .property("code", "INSUFFICIENT_QUOTA");
-    } else {
-      telemetryMessage
-          .property("conversationId", callParameters.getConversation().getId().toString())
-          .property("model", callParameters.getConversation().getModel())
-          .error(new RuntimeException(error.toString(), ex));
-    }
-    telemetryMessage.send();
   }
 }

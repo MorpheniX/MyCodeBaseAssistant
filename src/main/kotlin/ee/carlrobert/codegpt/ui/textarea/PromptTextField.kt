@@ -285,6 +285,6 @@ class PromptTextField(
 
     private fun getToolWindowHeight(): Int {
         return project.service<ToolWindowManager>()
-            .getToolWindow("ProxyAI")?.component?.visibleRect?.height ?: 400
+            .getToolWindow("MCBA")?.component?.visibleRect?.height ?: 400
     }
 }

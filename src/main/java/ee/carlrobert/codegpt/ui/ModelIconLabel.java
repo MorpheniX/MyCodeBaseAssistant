@@ -18,18 +18,6 @@ public class ModelIconLabel extends JBLabel {
     if ("chat.completion".equals(clientCode)) {
       setIcon(Icons.OpenAI);
     }
-    if ("anthropic.chat.completion".equals(clientCode)) {
-      setIcon(Icons.Anthropic);
-    }
-    if ("azure.chat.completion".equals(clientCode)) {
-      setIcon(Icons.Azure);
-    }
-    if ("llama.chat.completion".equals(clientCode)) {
-      setIcon(Icons.Llama);
-    }
-    if ("google.chat.completion".equals(clientCode)) {
-      setIcon(Icons.Google);
-    }
     setText(formatModelName(modelCode));
     setFont(JBFont.small());
     setHorizontalAlignment(SwingConstants.LEADING);

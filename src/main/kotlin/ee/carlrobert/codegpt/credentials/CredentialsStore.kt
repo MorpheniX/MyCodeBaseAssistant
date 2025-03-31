@@ -56,29 +56,5 @@ object CredentialsStore {
         data object CustomServiceApiKeyLegacy : CredentialKey() {
             override val value: String = "CUSTOM_SERVICE_API_KEY"
         }
-
-        data object AnthropicApiKey : CredentialKey() {
-            override val value: String = "ANTHROPIC_API_KEY"
-        }
-
-        data object AzureOpenaiApiKey : CredentialKey() {
-            override val value: String = "AZURE_OPENAI_API_KEY"
-        }
-
-        data object AzureActiveDirectoryToken : CredentialKey() {
-            override val value: String = "AZURE_ACTIVE_DIRECTORY_TOKEN"
-        }
-
-        data object LlamaApiKey : CredentialKey() {
-            override val value: String = "LLAMA_API_KEY"
-        }
-
-        data object GoogleApiKey : CredentialKey() {
-            override val value: String = "GOOGLE_API_KEY"
-        }
-
-        data object OllamaApikey : CredentialKey() {
-            override val value: String = "OLLAMA_API_KEY"
-        }
     }
 }

@@ -17,7 +17,6 @@ import ee.carlrobert.codegpt.credentials.CredentialsStore
 import ee.carlrobert.codegpt.credentials.CredentialsStore.CredentialKey.CodeGptApiKey
 import ee.carlrobert.codegpt.predictions.CodeSuggestionDiffViewer
 import ee.carlrobert.codegpt.settings.service.codegpt.CodeGPTServiceSettings
-import ee.carlrobert.codegpt.telemetry.core.configuration.TelemetryConfiguration
 import ee.carlrobert.codegpt.ui.OverlayUtil
 import ee.carlrobert.codegpt.util.GitUtil
 import ee.carlrobert.service.AcceptEditRequest
@@ -73,7 +72,6 @@ class GrpcClientService(private val project: Project) : Disposable {
             .setFileContent(editor.document.text)
             .setGitDiff(GitUtil.getCurrentChanges(project) ?: "")
             .setCursorPosition(runReadAction { editor.caretModel.offset })
-            .setEnableTelemetry(TelemetryConfiguration.getInstance().isCompletionTelemetryEnabled)
             .build()
         prevObserver = NextEditStreamObserver(editor, isManuallyOpened) {
             dispose()

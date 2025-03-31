@@ -9,7 +9,6 @@ import com.intellij.openapi.util.io.FileUtil.createDirectory
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.*
-import ee.carlrobert.codegpt.settings.service.llama.LlamaSettings.getLlamaModelsPath
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -69,36 +68,6 @@ object FileUtil {
             ).toFile()
         } catch (e: IOException) {
             throw RuntimeException("Failed to create file", e)
-        }
-    }
-
-    @JvmStatic
-    @Throws(IOException::class)
-    fun copyFileWithProgress(
-        fileName: String,
-        url: URL,
-        bytesRead: LongArray,
-        fileSize: Long,
-        indicator: ProgressIndicator
-    ) {
-        tryCreateDirectory(getLlamaModelsPath())
-
-        Channels.newChannel(url.openStream()).use { readableByteChannel ->
-            FileOutputStream(
-                getLlamaModelsPath().resolve(fileName).toFile()
-            ).use { fileOutputStream ->
-                val buffer = ByteBuffer.allocateDirect(1024 * 10)
-                while (readableByteChannel.read(buffer) != -1) {
-                    if (indicator.isCanceled) {
-                        readableByteChannel.close()
-                        break
-                    }
-                    buffer.flip()
-                    bytesRead[0] += fileOutputStream.channel.write(buffer).toLong()
-                    buffer.clear()
-                    indicator.fraction = bytesRead[0].toDouble() / fileSize
-                }
-            }
         }
     }
 

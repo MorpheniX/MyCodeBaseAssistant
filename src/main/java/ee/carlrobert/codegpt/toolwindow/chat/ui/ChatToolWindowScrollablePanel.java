@@ -34,33 +34,6 @@ public class ChatToolWindowScrollablePanel extends ScrollablePanel {
   public void displayLandingView(JComponent landingView) {
     clearAll();
     add(landingView);
-    if (GeneralSettings.isSelected(ServiceType.CODEGPT)
-        && !CredentialsStore.INSTANCE.isCredentialSet(CredentialKey.CodeGptApiKey.INSTANCE)) {
-
-      var panel = new ResponseMessagePanel();
-      panel.addContent(UIUtil.createTextPane("""
-              <html>
-              <p style="margin-top: 4px; margin-bottom: 4px;">
-                It looks like you haven't configured your API key yet. Visit <a href="#OPEN_SETTINGS">ProxyAI settings</a> to do so.
-              </p>
-              <p style="margin-top: 4px; margin-bottom: 4px;">
-                Don't have an account? <a href="https://tryproxy.io/signin">Sign up</a> to get the most out of ProxyAI.
-              </p>
-              </html>""",
-          false,
-          event -> {
-            if (ACTIVATED.equals(event.getEventType())
-                && "#OPEN_SETTINGS".equals(event.getDescription())) {
-              ShowSettingsUtil.getInstance().showSettingsDialog(
-                  ApplicationUtil.findCurrentProject(),
-                  CodeGPTServiceConfigurable.class);
-            } else {
-              UIUtil.handleHyperlinkClicked(event);
-            }
-          }));
-      panel.setBorder(JBUI.Borders.customLine(JBColor.border(), 1, 0, 0, 0));
-      add(panel);
-    }
   }
 
   public ResponseMessagePanel getResponseMessagePanel(UUID messageId) {

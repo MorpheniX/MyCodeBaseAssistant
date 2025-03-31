@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class CodeGPTPlugin {
 
-  public static final PluginId CODEGPT_ID = PluginId.getId("ee.carlrobert.chatgpt");
+  public static final PluginId CODEGPT_ID = PluginId.getId("ru.morphenix.mcba");
 
   private CodeGPTPlugin() {
   }
@@ -31,10 +31,6 @@ public final class CodeGPTPlugin {
 
   public static @NotNull String getIndexStorePath() {
     return getPluginOptionsPath() + separator + "indexes";
-  }
-
-  public static @NotNull String getLlamaSourcePath() {
-    return getPluginBasePath() + separator + "llama.cpp";
   }
 
   public static @NotNull String getProjectIndexStorePath(@NotNull Project project) {

@@ -15,7 +15,7 @@ class CodeGPTServiceConfigurable : Configurable {
     private lateinit var component: CodeGPTServiceForm
 
     override fun getDisplayName(): String {
-        return "ProxyAI: ProxyAI Service"
+        return "MCBA: ProxyAI Service"
     }
 
     override fun createComponent(): JComponent {

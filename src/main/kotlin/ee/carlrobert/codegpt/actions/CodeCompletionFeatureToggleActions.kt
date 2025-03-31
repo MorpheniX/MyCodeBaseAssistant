@@ -9,8 +9,6 @@ import ee.carlrobert.codegpt.settings.GeneralSettings
 import ee.carlrobert.codegpt.settings.service.ServiceType.*
 import ee.carlrobert.codegpt.settings.service.codegpt.CodeGPTServiceSettings
 import ee.carlrobert.codegpt.settings.service.custom.CustomServicesSettings
-import ee.carlrobert.codegpt.settings.service.llama.LlamaSettings
-import ee.carlrobert.codegpt.settings.service.ollama.OllamaSettings
 import ee.carlrobert.codegpt.settings.service.openai.OpenAISettings
 
 abstract class CodeCompletionFeatureToggleActions(
@@ -22,15 +20,8 @@ abstract class CodeCompletionFeatureToggleActions(
 
         OPENAI -> OpenAISettings.getCurrentState()::setCodeCompletionsEnabled
 
-        LLAMA_CPP -> LlamaSettings.getCurrentState()::setCodeCompletionsEnabled
-
-        OLLAMA -> service<OllamaSettings>().state::codeCompletionsEnabled::set
-
         CUSTOM_OPENAI -> service<CustomServicesSettings>().state.active.codeCompletionSettings::codeCompletionsEnabled::set
 
-        ANTHROPIC,
-        AZURE,
-        GOOGLE,
         null -> { _: Boolean -> Unit } // no-op for these services
     }(enableFeatureAction)
 
@@ -43,13 +34,8 @@ abstract class CodeCompletionFeatureToggleActions(
         e.presentation.isEnabled = when (selectedService) {
             CODEGPT,
             OPENAI,
-            CUSTOM_OPENAI,
-            LLAMA_CPP,
-            OLLAMA -> true
+            CUSTOM_OPENAI -> true
 
-            ANTHROPIC,
-            AZURE,
-            GOOGLE,
             null -> false
         }
     }

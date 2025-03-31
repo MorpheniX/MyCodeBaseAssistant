@@ -13,6 +13,7 @@ public class AdvancedSettingsState {
   private String proxyPassword;
   private int connectTimeout = 120;
   private int readTimeout = 120;
+  private boolean disableSslVerification = false;
 
   public String getProxyHost() {
     return proxyHost;
@@ -78,6 +79,14 @@ public class AdvancedSettingsState {
     this.readTimeout = readTimeout;
   }
 
+  public boolean isDisableSslVerification() {
+    return disableSslVerification;
+  }
+
+  public void setDisableSslVerification(boolean disableSslVerification) {
+    this.disableSslVerification = disableSslVerification;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -90,6 +99,7 @@ public class AdvancedSettingsState {
         && isProxyAuthSelected() == that.isProxyAuthSelected()
         && getConnectTimeout() == that.getConnectTimeout()
         && getReadTimeout() == that.getReadTimeout()
+        && isDisableSslVerification() == that.isDisableSslVerification()
         && Objects.equals(getProxyHost(), that.getProxyHost())
         && getProxyType() == that.getProxyType()
         && Objects.equals(getProxyUsername(), that.getProxyUsername())
@@ -99,6 +109,6 @@ public class AdvancedSettingsState {
   @Override
   public int hashCode() {
     return Objects.hash(getProxyHost(), getProxyPort(), getProxyType(), isProxyAuthSelected(),
-        getProxyUsername(), getProxyPassword(), getConnectTimeout(), getReadTimeout());
+        getProxyUsername(), getProxyPassword(), getConnectTimeout(), getReadTimeout(), isDisableSslVerification());
   }
 }

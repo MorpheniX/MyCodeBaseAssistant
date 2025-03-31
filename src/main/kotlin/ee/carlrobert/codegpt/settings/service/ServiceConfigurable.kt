@@ -4,7 +4,6 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.options.Configurable
 import ee.carlrobert.codegpt.conversations.ConversationsState
 import ee.carlrobert.codegpt.settings.GeneralSettings
-import ee.carlrobert.codegpt.telemetry.TelemetryAction
 import ee.carlrobert.codegpt.toolwindow.chat.ChatToolWindowContentManager
 import ee.carlrobert.codegpt.util.ApplicationUtil.findCurrentProject
 import javax.swing.JComponent
@@ -14,7 +13,7 @@ class ServiceConfigurable : Configurable {
     private lateinit var component: ServiceConfigurableComponent
 
     override fun getDisplayName(): String {
-        return "ProxyAI: Services"
+        return "MCBA: Services"
     }
 
     override fun createComponent(): JComponent {
@@ -33,9 +32,6 @@ class ServiceConfigurable : Configurable {
         val serviceChanged = component.getSelectedService() != state.selectedService
         if (serviceChanged) {
             resetActiveTab()
-            TelemetryAction.SETTINGS_CHANGED.createActionMessage()
-                .property("service", component.getSelectedService().code.lowercase())
-                .send()
         }
     }
 

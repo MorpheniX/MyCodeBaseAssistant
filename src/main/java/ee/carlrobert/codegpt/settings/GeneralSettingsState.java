@@ -8,7 +8,7 @@ public class GeneralSettingsState {
 
   private String displayName = "";
   private String avatarBase64 = "";
-  private ServiceType selectedService = ServiceType.CODEGPT;
+  private ServiceType selectedService = ServiceType.CUSTOM_OPENAI;
 
   public String getDisplayName() {
     if (displayName == null || displayName.isEmpty()) {

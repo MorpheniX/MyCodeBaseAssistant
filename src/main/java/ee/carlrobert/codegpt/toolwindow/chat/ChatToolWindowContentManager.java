@@ -123,11 +123,11 @@ public final class ChatToolWindowContentManager {
 
   public @NotNull ToolWindow getToolWindow() {
     var toolWindowManager = ToolWindowManager.getInstance(project);
-    var toolWindow = toolWindowManager.getToolWindow("ProxyAI");
+    var toolWindow = toolWindowManager.getToolWindow("MCBA");
     // https://intellij-support.jetbrains.com/hc/en-us/community/posts/11533368171026/comments/11538403084562
     return Objects.requireNonNullElseGet(toolWindow, () -> toolWindowManager
         .registerToolWindow(RegisterToolWindowTask.closable(
-            "ProxyAI",
+            "MCBA",
             () -> CodeGPTBundle.get("project.label"),
             Icons.DefaultSmall,
             ToolWindowAnchor.RIGHT)));

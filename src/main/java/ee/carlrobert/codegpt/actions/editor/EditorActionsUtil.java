@@ -64,7 +64,7 @@ public class EditorActionsUtil {
     ActionManager actionManager = ActionManager.getInstance();
     var actionId = convertToId(action.getTemplateText());
     if (actionManager.getAction(actionId) == null) {
-      actionManager.registerAction(actionId, action, PluginId.getId("ee.carlrobert.chatgpt"));
+      actionManager.registerAction(actionId, action, PluginId.getId("ru.morphenix.mcba"));
     }
   }
 

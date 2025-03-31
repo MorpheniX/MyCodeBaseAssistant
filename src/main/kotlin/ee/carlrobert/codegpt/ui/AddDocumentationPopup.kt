@@ -18,10 +18,10 @@ import javax.swing.JComponent
 class AddDocumentationDialog(project: Project) : DialogWrapper(project) {
 
     private var nameField = JBTextField("", 40).apply {
-        emptyText.text = "ProxyAI docs"
+        emptyText.text = "docs"
     }
     private var urlField = JBTextField("", 40).apply {
-        emptyText.text = "https://docs.tryproxy.io"
+        emptyText.text = "https://url"
     }
     private var saveCheckbox =
         JBCheckBox(CodeGPTBundle.get("addDocumentation.popup.form.saveCheckbox.label"), true)

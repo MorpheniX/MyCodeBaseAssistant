@@ -275,10 +275,7 @@ class UserInputPanel(
 
     private fun isImageActionSupported(): Boolean {
         return when (service<GeneralSettings>().state.selectedService) {
-            ServiceType.CUSTOM_OPENAI,
-            ServiceType.ANTHROPIC,
-            ServiceType.AZURE,
-            ServiceType.OLLAMA -> true
+            ServiceType.CUSTOM_OPENAI -> true
 
             ServiceType.CODEGPT -> {
                 listOf(

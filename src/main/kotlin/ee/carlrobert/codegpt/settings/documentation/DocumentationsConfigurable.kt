@@ -8,7 +8,7 @@ class DocumentationsConfigurable : Configurable {
     private lateinit var component: DocumentationsSettingsForm
 
     override fun getDisplayName(): String {
-        return "ProxyAI: Documentations"
+        return "MCBA: Documentations"
     }
 
     override fun createComponent(): JComponent {

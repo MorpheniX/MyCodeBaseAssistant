@@ -11,7 +11,6 @@ import ee.carlrobert.codegpt.conversations.ConversationService
 import ee.carlrobert.codegpt.conversations.message.Message
 import ee.carlrobert.codegpt.settings.configuration.ConfigurationSettings
 import ee.carlrobert.codegpt.settings.prompts.PromptsSettings
-import ee.carlrobert.codegpt.settings.service.llama.LlamaSettings
 import ee.carlrobert.llm.client.http.RequestEntity
 import ee.carlrobert.llm.client.http.exchange.StreamHttpExchange
 import ee.carlrobert.llm.client.util.JSONUtil.*
@@ -400,82 +399,5 @@ class ChatToolWindowTabPanelTest : IntegrationTest() {
                 message.response,
                 listOf("TEST_FILE_PATH_1", "TEST_FILE_PATH_2", "TEST_FILE_PATH_3")
             )
-    }
-
-    fun testSendingLlamaMessage() {
-        useLlamaService()
-        val configurationState = service<ConfigurationSettings>().state
-        service<PromptsSettings>().state.personas.selectedPersona.instructions =
-            "TEST_SYSTEM_PROMPT"
-        configurationState.maxTokens = 1000
-        configurationState.temperature = 0.1f
-        val llamaSettings = LlamaSettings.getCurrentState()
-        llamaSettings.isUseCustomModel = false
-        llamaSettings.huggingFaceModel = HuggingFaceModel.CODE_LLAMA_7B_Q4
-        llamaSettings.topK = 30
-        llamaSettings.topP = 0.8
-        llamaSettings.minP = 0.03
-        llamaSettings.repeatPenalty = 1.3
-        val message = Message("TEST_PROMPT")
-        val conversation = ConversationService.getInstance().startConversation()
-        val panel = ChatToolWindowTabPanel(project, conversation)
-        expectLlama(StreamHttpExchange { request: RequestEntity ->
-            assertThat(request.uri.path).isEqualTo("/completion")
-            assertThat(request.body)
-                .extracting(
-                    "prompt",
-                    "n_predict",
-                    "stream",
-                    "temperature",
-                    "top_k",
-                    "top_p",
-                    "min_p",
-                    "repeat_penalty"
-                )
-                .containsExactly(
-                    LLAMA.buildPrompt(
-                        "TEST_SYSTEM_PROMPT",
-                        "TEST_PROMPT",
-                        conversation.messages
-                    ),
-                    configurationState.maxTokens,
-                    true,
-                    configurationState.temperature.toDouble(),
-                    llamaSettings.topK,
-                    llamaSettings.topP,
-                    llamaSettings.minP,
-                    llamaSettings.repeatPenalty
-                )
-            listOf<String?>(
-                jsonMapResponse("content", "Hel"),
-                jsonMapResponse("content", "lo!"),
-                jsonMapResponse(
-                    e("content", ""),
-                    e("stop", true)
-                )
-            )
-        })
-
-        panel.sendMessage(message, ConversationType.DEFAULT)
-
-        waitExpecting {
-            val messages = conversation.messages
-            messages.isNotEmpty() && "Hello!" == messages[0].response
-                    && panel.tokenDetails.conversationTokens > 0
-        }
-        assertThat(panel.conversation)
-            .isNotNull()
-            .extracting("id", "model", "clientCode", "discardTokenLimit")
-            .containsExactly(
-                conversation.id,
-                conversation.model,
-                conversation.clientCode,
-                false
-            )
-        val messages = panel.conversation.messages
-        assertThat(messages).hasSize(1)
-        assertThat(messages[0])
-            .extracting("id", "prompt", "response")
-            .containsExactly(message.id, message.prompt, message.response)
     }
 }

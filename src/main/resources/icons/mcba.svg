@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="512px" height="512px" version="1.1" viewBox="0 0 256 256"
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="20px" height="20px" version="1.1" viewBox="0 0 256 256"
   xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -43,4 +43,4 @@
   
   <!-- Text "MCBA" -->
   <text x="128" y="196" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#E0E0E0" text-anchor="middle">MCBA</text>
-</svg>
+</svg> 

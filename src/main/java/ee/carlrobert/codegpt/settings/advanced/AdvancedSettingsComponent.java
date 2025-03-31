@@ -28,6 +28,7 @@ public class AdvancedSettingsComponent {
   private final JBPasswordField proxyAuthPassword;
   private final PortField connectionTimeoutField;
   private final PortField readTimeoutField;
+  private final JBCheckBox disableSslVerificationCheckbox;
 
   public AdvancedSettingsComponent(AdvancedSettingsState advancedSettings) {
     proxyTypeComboBox = new ComboBox<>(new Proxy.Type[]{
@@ -51,6 +52,8 @@ public class AdvancedSettingsComponent {
     });
     connectionTimeoutField = new PortField(advancedSettings.getConnectTimeout());
     readTimeoutField = new PortField(advancedSettings.getReadTimeout());
+    disableSslVerificationCheckbox = new JBCheckBox("Disable SSL certificate verification (Not recommended for production)");
+    disableSslVerificationCheckbox.setSelected(advancedSettings.isDisableSslVerification());
 
     mainPanel = FormBuilder.createFormBuilder()
         .addComponent(new TitledSeparator(CodeGPTBundle.get(
@@ -73,6 +76,7 @@ public class AdvancedSettingsComponent {
         .addLabeledComponent(
             CodeGPTBundle.get("advancedSettingsConfigurable.connectionSettings.readTimeout.label"),
             readTimeoutField)
+        .addComponent(disableSslVerificationCheckbox)
         .getPanel();
     panel.setBorder(JBUI.Borders.emptyLeft(16));
     return panel;
@@ -138,6 +142,7 @@ public class AdvancedSettingsComponent {
     state.setProxyPassword(new String(proxyAuthPassword.getPassword()));
     state.setConnectTimeout(connectionTimeoutField.getNumber());
     state.setReadTimeout(readTimeoutField.getNumber());
+    state.setDisableSslVerification(disableSslVerificationCheckbox.isSelected());
     return state;
   }
 
@@ -151,5 +156,6 @@ public class AdvancedSettingsComponent {
     proxyAuthPassword.setText(advancedSettings.getProxyPassword());
     connectionTimeoutField.setNumber(advancedSettings.getConnectTimeout());
     readTimeoutField.setNumber(advancedSettings.getReadTimeout());
+    disableSslVerificationCheckbox.setSelected(advancedSettings.isDisableSslVerification());
   }
 }

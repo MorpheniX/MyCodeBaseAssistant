@@ -7,12 +7,7 @@ import java.util.Map;
 public enum ServiceType {
   CODEGPT("CODEGPT", "service.codegpt.title", "codegpt.chat.completion"),
   OPENAI("OPENAI", "service.openai.title", "chat.completion"),
-  CUSTOM_OPENAI("CUSTOM_OPENAI", "service.custom.openai.title", "custom.openai.chat.completion"),
-  ANTHROPIC("ANTHROPIC", "service.anthropic.title", "anthropic.chat.completion"),
-  AZURE("AZURE", "service.azure.title", "azure.chat.completion"),
-  GOOGLE("GOOGLE", "service.google.title", "google.chat.completion"),
-  LLAMA_CPP("LLAMA_CPP", "service.llama.title", "llama.chat.completion"),
-  OLLAMA("OLLAMA", "service.ollama.title", "ollama.chat.completion");
+  CUSTOM_OPENAI("CUSTOM_OPENAI", "service.custom.openai.title", "custom.openai.chat.completion");
 
   private final String code;
   private final String label;

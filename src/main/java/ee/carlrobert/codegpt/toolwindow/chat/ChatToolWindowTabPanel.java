@@ -25,7 +25,6 @@ import ee.carlrobert.codegpt.psistructure.PsiStructureProvider;
 import ee.carlrobert.codegpt.psistructure.models.ClassStructure;
 import ee.carlrobert.codegpt.settings.GeneralSettings;
 import ee.carlrobert.codegpt.settings.service.ServiceType;
-import ee.carlrobert.codegpt.telemetry.TelemetryAction;
 import ee.carlrobert.codegpt.toolwindow.chat.editor.actions.CopyAction;
 import ee.carlrobert.codegpt.toolwindow.chat.structure.data.PsiStructureRepository;
 import ee.carlrobert.codegpt.toolwindow.chat.structure.data.PsiStructureState;
@@ -314,10 +313,6 @@ public class ChatToolWindowTabPanel implements Disposable {
       }
 
       totalTokensPanel.updateConversationTokens(conversation);
-
-      TelemetryAction.IDE_ACTION.createActionMessage()
-          .property("action", ActionType.RELOAD_MESSAGE.name())
-          .send();
     }
   }
 

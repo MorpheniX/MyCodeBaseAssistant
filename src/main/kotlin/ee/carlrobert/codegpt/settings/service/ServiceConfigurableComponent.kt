@@ -13,8 +13,6 @@ import ee.carlrobert.codegpt.settings.GeneralSettings
 import ee.carlrobert.codegpt.settings.service.codegpt.CodeGPTServiceConfigurable
 import ee.carlrobert.codegpt.settings.service.codegpt.CodeGPTServiceForm
 import ee.carlrobert.codegpt.settings.service.custom.CustomServiceConfigurable
-import ee.carlrobert.codegpt.settings.service.google.GoogleSettingsConfigurable
-import ee.carlrobert.codegpt.settings.service.ollama.OllamaSettingsConfigurable
 import javax.swing.JPanel
 
 class ServiceConfigurableComponent {
@@ -52,14 +50,10 @@ class ServiceConfigurableComponent {
 
     private fun addLinks(formBuilder: FormBuilder) {
         mapOf(
-            "ProxyAI" to CodeGPTServiceConfigurable::class.java,
-            "OpenAI" to OpenAIServiceConfigurable::class.java,
+            // Disable all except custom
+            // "ProxyAI" to CodeGPTServiceConfigurable::class.java,
+            // "OpenAI" to OpenAIServiceConfigurable::class.java,
             "Custom OpenAI" to CustomServiceConfigurable::class.java,
-            "Azure" to AzureServiceConfigurable::class.java,
-            "Anthropic" to AnthropicServiceConfigurable::class.java,
-            "Google" to GoogleSettingsConfigurable::class.java,
-            "LLaMA C/C++ (Local)" to LlamaServiceConfigurable::class.java,
-            "Ollama (Local)" to OllamaSettingsConfigurable::class.java,
         ).entries.forEach { (name, configurableClass) ->
             formBuilder.addComponent(ActionLink(name) {
                 val context = service<DataManager>().getDataContext(it.source as ActionLink)

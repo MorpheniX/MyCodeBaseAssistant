@@ -16,7 +16,7 @@ class CustomServiceConfigurable : Configurable {
     private lateinit var component: CustomServiceListForm
 
     override fun getDisplayName(): String {
-        return "ProxyAI: Custom Service"
+        return "MCBA: Custom Service"
     }
 
     override fun createComponent(): JComponent {

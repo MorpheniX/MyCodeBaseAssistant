@@ -37,7 +37,6 @@ import ee.carlrobert.codegpt.events.WebSearchEventDetails;
 import ee.carlrobert.codegpt.settings.GeneralSettings;
 import ee.carlrobert.codegpt.settings.GeneralSettingsConfigurable;
 import ee.carlrobert.codegpt.settings.service.ServiceType;
-import ee.carlrobert.codegpt.telemetry.TelemetryAction;
 import ee.carlrobert.codegpt.toolwindow.chat.StreamParser;
 import ee.carlrobert.codegpt.toolwindow.chat.ThinkingOutputParser;
 import ee.carlrobert.codegpt.toolwindow.chat.editor.ResponseEditorPanel;
@@ -164,9 +163,6 @@ public class ChatMessageResponseBody extends JPanel {
         if (e.getEventType() == ACTIVATED) {
           ShowSettingsUtil.getInstance()
               .showSettingsDialog(project, GeneralSettingsConfigurable.class);
-          TelemetryAction.IDE_ACTION.createActionMessage()
-              .property("action", ActionType.CHANGE_PROVIDER.name())
-              .send();
         }
       });
       hideCaret();

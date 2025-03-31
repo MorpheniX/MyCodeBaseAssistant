@@ -18,8 +18,6 @@ import ee.carlrobert.codegpt.settings.configuration.ConfigurationSettings
 import ee.carlrobert.codegpt.settings.service.ServiceType
 import ee.carlrobert.codegpt.settings.service.codegpt.CodeGPTServiceSettings
 import ee.carlrobert.codegpt.settings.service.custom.CustomServicesSettings
-import ee.carlrobert.codegpt.settings.service.llama.LlamaSettings
-import ee.carlrobert.codegpt.settings.service.ollama.OllamaSettings
 import ee.carlrobert.codegpt.settings.service.openai.OpenAISettings
 import ee.carlrobert.codegpt.ui.OverlayUtil
 import ee.carlrobert.codegpt.util.StringUtil.extractUntilNewline
@@ -165,11 +163,6 @@ class DebouncedCodeCompletionProvider : DebouncedInlineCompletionProvider() {
             ServiceType.CODEGPT -> service<CodeGPTServiceSettings>().state.codeCompletionSettings.codeCompletionsEnabled
             ServiceType.OPENAI -> OpenAISettings.getCurrentState().isCodeCompletionsEnabled
             ServiceType.CUSTOM_OPENAI -> service<CustomServicesSettings>().state.active.codeCompletionSettings.codeCompletionsEnabled
-            ServiceType.LLAMA_CPP -> LlamaSettings.isCodeCompletionsPossible()
-            ServiceType.OLLAMA -> service<OllamaSettings>().state.codeCompletionsEnabled
-            ServiceType.ANTHROPIC,
-            ServiceType.AZURE,
-            ServiceType.GOOGLE,
             null -> false
         }
         val hasActiveCompletion =

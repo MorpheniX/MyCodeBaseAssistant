@@ -3,25 +3,19 @@ package ee.carlrobert.codegpt.completions;
 import static ee.carlrobert.codegpt.credentials.CredentialsStore.getCredential;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.util.net.ssl.CertificateManager;
 import ee.carlrobert.codegpt.credentials.CredentialsStore.CredentialKey;
 import ee.carlrobert.codegpt.settings.advanced.AdvancedSettings;
-import ee.carlrobert.codegpt.settings.service.anthropic.AnthropicSettings;
-import ee.carlrobert.codegpt.settings.service.azure.AzureSettings;
-import ee.carlrobert.codegpt.settings.service.llama.LlamaSettings;
-import ee.carlrobert.codegpt.settings.service.ollama.OllamaSettings;
 import ee.carlrobert.codegpt.settings.service.openai.OpenAISettings;
-import ee.carlrobert.llm.client.anthropic.ClaudeClient;
-import ee.carlrobert.llm.client.azure.AzureClient;
-import ee.carlrobert.llm.client.azure.AzureCompletionRequestParams;
 import ee.carlrobert.llm.client.codegpt.CodeGPTClient;
-import ee.carlrobert.llm.client.google.GoogleClient;
-import ee.carlrobert.llm.client.llama.LlamaClient;
-import ee.carlrobert.llm.client.ollama.OllamaClient;
 import ee.carlrobert.llm.client.openai.OpenAIClient;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
@@ -40,69 +34,8 @@ public class CompletionClientProvider {
         .build(getDefaultClientBuilder());
   }
 
-  public static ClaudeClient getClaudeClient() {
-    var builder = new ClaudeClient.Builder(getCredential(CredentialKey.AnthropicApiKey.INSTANCE),
-            AnthropicSettings.getCurrentState().getApiVersion());
-    if (AnthropicSettings.getCurrentState().hasCustomBaseHost()) {
-      builder.setHost(AnthropicSettings.getCurrentState().getBaseHost());
-    }
-    return builder.build(getDefaultClientBuilder());
-  }
-
-  public static AzureClient getAzureClient() {
-    var settings = AzureSettings.getCurrentState();
-    var params = new AzureCompletionRequestParams(
-        settings.getResourceName(),
-        settings.getDeploymentId(),
-        settings.getApiVersion());
-    var useAzureActiveDirectoryAuthentication = settings.isUseAzureActiveDirectoryAuthentication();
-    var credential = useAzureActiveDirectoryAuthentication
-        ? getCredential(CredentialKey.AzureActiveDirectoryToken.INSTANCE)
-        : getCredential(CredentialKey.AzureOpenaiApiKey.INSTANCE);
-    return new AzureClient.Builder(credential, params)
-        .setActiveDirectoryAuthentication(useAzureActiveDirectoryAuthentication)
-        .build(getDefaultClientBuilder());
-  }
-
-  public static LlamaClient getLlamaClient() {
-    var llamaSettings = LlamaSettings.getCurrentState();
-    var builder = new LlamaClient.Builder()
-        .setPort(llamaSettings.getServerPort());
-    if (!llamaSettings.isRunLocalServer()) {
-      builder.setHost(llamaSettings.getBaseHost());
-      String apiKey = getCredential(CredentialKey.LlamaApiKey.INSTANCE);
-      if (apiKey != null && !apiKey.isBlank()) {
-        builder.setApiKey(apiKey);
-      }
-    }
-    return builder.build(getDefaultClientBuilder());
-  }
-
-  public static OllamaClient getOllamaClient() {
-    var host = ApplicationManager.getApplication()
-        .getService(OllamaSettings.class)
-        .getState()
-        .getHost();
-    var builder = new OllamaClient.Builder()
-        .setHost(host);
-
-    String apiKey = getCredential(CredentialKey.OllamaApikey.INSTANCE);
-    if (apiKey != null && !apiKey.isBlank()) {
-      builder.setApiKey(apiKey);
-    }
-    return builder.build(getDefaultClientBuilder());
-  }
-
-  public static GoogleClient getGoogleClient() {
-    return new GoogleClient.Builder(getCredential(CredentialKey.GoogleApiKey.INSTANCE))
-        .build(getDefaultClientBuilder());
-  }
-
   public static OkHttpClient.Builder getDefaultClientBuilder() {
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
-    CertificateManager certificateManager = CertificateManager.getInstance();
-    X509TrustManager trustManager = certificateManager.getTrustManager();
-    builder.sslSocketFactory(certificateManager.getSslContext().getSocketFactory(), trustManager);
     var advancedSettings = AdvancedSettings.getCurrentState();
     var proxyHost = advancedSettings.getProxyHost();
     var proxyPort = advancedSettings.getProxyPort();
@@ -117,6 +50,39 @@ public class CompletionClientProvider {
                     advancedSettings.getProxyUsername(),
                     advancedSettings.getProxyPassword()))
                 .build());
+      }
+    }
+
+    // SSL certificate verification disabling - only if enabled in settings
+    if (advancedSettings.isDisableSslVerification()) {
+      try {
+        // Create a trust manager that does not validate certificate chains
+        final TrustManager[] trustAllCerts = new TrustManager[] {
+            new X509TrustManager() {
+              @Override
+              public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+              }
+
+              @Override
+              public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+              }
+
+              @Override
+              public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return new java.security.cert.X509Certificate[]{};
+              }
+            }
+        };
+
+        // Install the all-trusting trust manager
+        final SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+        
+        // Create an ssl socket factory with our all-trusting manager
+        builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager)trustAllCerts[0]);
+        builder.hostnameVerifier((hostname, session) -> true);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       }
     }
 
