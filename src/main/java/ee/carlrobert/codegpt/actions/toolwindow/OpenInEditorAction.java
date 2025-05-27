@@ -35,24 +35,24 @@ public class OpenInEditorAction extends AnAction {
 
   @Override
   public void actionPerformed(@NotNull AnActionEvent e) {
-      var project = e.getProject();
-      var currentConversation = ConversationsState.getCurrentConversation();
-      if (project != null && currentConversation != null) {
-        var dateTimeStamp = currentConversation.getUpdatedOn()
-            .format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-        var fileName = format("%s_%s.md", currentConversation.getModel(), dateTimeStamp);
-        var fileContent = currentConversation
-            .getMessages()
-            .stream()
-            .map(it -> format("### User:%n%s%n### CodeGPT:%n%s%n", it.getPrompt(),
-                it.getResponse()))
-            .collect(Collectors.joining());
-        VirtualFile file = new LightVirtualFile(fileName, fileContent);
-        FileEditorManager.getInstance(project).openFile(file, true);
-        var toolWindow = requireNonNull(
-            ToolWindowManager.getInstance(project).getToolWindow("CodeGPT"));
-        toolWindow.hide();
-      }
+    var project = e.getProject();
+    var currentConversation = ConversationsState.getCurrentConversation();
+    if (project != null && currentConversation != null) {
+      var dateTimeStamp = currentConversation.getUpdatedOn()
+          .format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+      var fileName = format("%s_%s.md", currentConversation.getModel(), dateTimeStamp);
+      var fileContent = currentConversation
+          .getMessages()
+          .stream()
+          .map(it -> format("### User:%n%s%n### CodeGPT:%n%s%n", it.getPrompt(),
+              it.getResponse()))
+          .collect(Collectors.joining());
+      VirtualFile file = new LightVirtualFile(fileName, fileContent);
+      FileEditorManager.getInstance(project).openFile(file, true);
+      var toolWindow = requireNonNull(
+          ToolWindowManager.getInstance(project).getToolWindow("CodeGPT"));
+      toolWindow.hide();
+    }
   }
 
   @Override

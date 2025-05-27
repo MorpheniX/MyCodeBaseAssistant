@@ -79,7 +79,7 @@ public class CompletionClientProvider {
         sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
         
         // Create an ssl socket factory with our all-trusting manager
-        builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager)trustAllCerts[0]);
+        builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0]);
         builder.hostnameVerifier((hostname, session) -> true);
       } catch (Exception e) {
         throw new RuntimeException(e);

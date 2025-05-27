@@ -52,7 +52,7 @@ public class AdvancedSettingsComponent {
     });
     connectionTimeoutField = new PortField(advancedSettings.getConnectTimeout());
     readTimeoutField = new PortField(advancedSettings.getReadTimeout());
-    disableSslVerificationCheckbox = new JBCheckBox("Disable SSL certificate verification (Not recommended for production)");
+    disableSslVerificationCheckbox = new JBCheckBox("Disable SSL certificate verification");
     disableSslVerificationCheckbox.setSelected(advancedSettings.isDisableSslVerification());
 
     mainPanel = FormBuilder.createFormBuilder()

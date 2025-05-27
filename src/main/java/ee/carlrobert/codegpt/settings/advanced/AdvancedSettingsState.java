@@ -108,7 +108,15 @@ public class AdvancedSettingsState {
 
   @Override
   public int hashCode() {
-    return Objects.hash(getProxyHost(), getProxyPort(), getProxyType(), isProxyAuthSelected(),
-        getProxyUsername(), getProxyPassword(), getConnectTimeout(), getReadTimeout(), isDisableSslVerification());
+    return Objects.hash(
+        getProxyHost(),
+        getProxyPort(),
+        getProxyType(),
+        isProxyAuthSelected(),
+        getProxyUsername(),
+        getProxyPassword(),
+        getConnectTimeout(),
+        getReadTimeout(),
+        isDisableSslVerification());
   }
 }

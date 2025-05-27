@@ -57,10 +57,9 @@ public class ModelComboBoxAction extends ComboBoxAction {
       Project project,
       Consumer<ServiceType> onModelChange,
       ServiceType selectedService) {
-      // Disable all except custom
-      // this(project, onModelChange, selectedService, Arrays.asList(ServiceType.values()));
-      this(project, onModelChange, selectedService, Arrays.asList(ServiceType.CUSTOM_OPENAI));
-
+    // Disable all except custom
+    // this(project, onModelChange, selectedService, Arrays.asList(ServiceType.values()));
+    this(project, onModelChange, selectedService, Arrays.asList(ServiceType.CUSTOM_OPENAI));
   }
 
   public ModelComboBoxAction(

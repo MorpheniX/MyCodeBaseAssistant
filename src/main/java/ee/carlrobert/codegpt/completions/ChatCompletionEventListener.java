@@ -59,8 +59,8 @@ public class ChatCompletionEventListener implements CompletionEventListener<Stri
 
   @Override
   public void onError(ErrorDetails error, Throwable ex) {
-      callParameters.getConversation().addMessage(callParameters.getMessage());
-      eventListener.handleError(error, ex);
+    callParameters.getConversation().addMessage(callParameters.getMessage());
+    eventListener.handleError(error, ex);
   }
 
   private void handleCompleted(StringBuilder messageBuilder) {

@@ -20,9 +20,9 @@ public class CreateNewConversationAction extends AnAction {
 
   @Override
   public void actionPerformed(@NotNull AnActionEvent event) {
-      var project = event.getProject();
-      if (project != null) {
-        onCreate.run();
-      }
+    var project = event.getProject();
+    if (project != null) {
+      onCreate.run();
+    }
   }
 }
