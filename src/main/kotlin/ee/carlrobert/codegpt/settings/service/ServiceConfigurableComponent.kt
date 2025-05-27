@@ -20,7 +20,7 @@ class ServiceConfigurableComponent {
     var form: CodeGPTServiceForm = CodeGPTServiceForm()
 
     private var serviceComboBox: ComboBox<ServiceType> =
-        ComboBox(EnumComboBoxModel(ServiceType::class.java)).apply {
+        ComboBox(arrayOf(ServiceType.CUSTOM_OPENAI)).apply {
             selectedItem = service<GeneralSettings>().state.selectedService
         }
 
