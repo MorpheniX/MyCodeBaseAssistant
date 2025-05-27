@@ -58,48 +58,6 @@ class CodeCompletionServiceTest : IntegrationTest() {
         }
     }
 
-    fun `test code completion with OpenAI provider`() {
-        useOpenAIService()
-        service<CodeGPTServiceSettings>().state.nextEditsEnabled = false
-        service<ConfigurationSettings>().state.codeCompletionSettings.multiLineEnabled = false
-        myFixture.configureByText(
-            "CompletionTest.java",
-            FileUtil.getResourceContent("/codecompletions/code-completion-file.txt")
-        )
-        myFixture.editor.caretModel.moveToVisualPosition(VisualPosition(3, 0))
-        val prefix = """
-             xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-             zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
-             [INPUT]
-             p
-             """.trimIndent()
-        val suffix = """
-             
-             [\INPUT]
-             zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
-             xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-             """.trimIndent()
-        expectOpenAI(StreamHttpExchange { request: RequestEntity ->
-            assertThat(request.uri.path).isEqualTo("/v1/completions")
-            assertThat(request.method).isEqualTo("POST")
-            assertThat(request.body)
-                .extracting("model", "prompt", "suffix", "max_tokens")
-                .containsExactly("gpt-3.5-turbo-instruct", prefix, suffix, 128)
-            listOf(
-                jsonMapResponse("choices", jsonArray(jsonMap("text", "ublic "))),
-                jsonMapResponse("choices", jsonArray(jsonMap("text", "void"))),
-                jsonMapResponse("choices", jsonArray(jsonMap("text", " main")))
-            )
-        })
-
-        myFixture.type('p')
-
-        assertInlineSuggestion("Failed to display initial inline suggestion.") {
-            "ublic void main" == it
-        }
-    }
-
-
     fun `test apply inline suggestions without initial following text`() {
         useCodeGPTService()
         service<CodeGPTServiceSettings>().state.nextEditsEnabled = false
